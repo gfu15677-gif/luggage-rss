@@ -7,31 +7,32 @@ from helpers import time_difference
 
 load_dotenv()
 
-RUN_FREQUENCY = int(os.getenv("RUN_FREQUENCY", "3600"))  # 单位：秒（默认1小时）
+RUN_FREQUENCY = int(os.getenv("RUN_FREQUENCY", "3600"))
 
-# ===== 拉杆箱包 RSS 源列表 =====
-# 你可以在下面添加或删除链接，一行一个
+# ===== 箱包拉杆 RSS 源（多个信源聚合）=====
 RSS_URLS = [
-    # 1. Google News 多关键词搜索（中英文全覆盖）
-    "https://news.google.com/rss/search?q=%E6%8B%89%E6%9D%86%E7%AE%B1+OR+%E8%A1%8C%E6%9D%8E%E7%AE%B1+OR+luggage+OR+suitcase+OR+trolley+case+OR+travel+bag&hl=zh-CN&gl=CN&ceid=CN:zh-Hans",
+    # 1. Google News 多关键词搜索（基础）
+    "https://news.google.com/rss/search?q=%E6%8B%89%E6%9D%86%E7%AE%B1+OR+%E8%A1%8C%E6%9D%8E%E7%AE%B1+OR+%E7%AE%B1%E5%8C%85+OR+luggage+OR+suitcase+OR+trolley+case+OR+travel+bag+OR+%E4%B8%AD%E6%B8%AF%E7%9A%AE%E5%85%B7%E5%9F%8E+OR+%E6%8A%A4%E8%84%8A%E6%8B%89%E6%9D%86%E4%B9%A6%E5%8C%85&hl=zh-CN&gl=CN&ceid=CN:zh-Hans",
 
-    # 2. 科技媒体 The Verge 的 luggage 标签
-    "https://www.theverge.com/luggage/feed.xml",
+    # 2. 行业垂直媒体
+    "https://www.luggagemagazine.com/feed/",                    # Luggage Magazine
+    "https://www.travelaccessories.org/feed/",                  # Travel Goods Association
+    "https://www.themoodieblog.com/feed/",                      # Moodie Davitt Report（旅游零售）
 
-    # 3. 科技媒体 TechCrunch 的 luggage 标签（如果有）
-    # 注意：TechCrunch 可能没有专门标签，暂用通用版
-    "https://techcrunch.com/tag/luggage/feed/",
+    # 3. 品牌官方博客（示例，你可以根据实际品牌添加）
+    "https://www.samsonite.com/blog/feed/",                     # Samsonite 博客（需确认）
+    "https://www.rimowa.com/blog/feed/",                        # Rimowa 博客（需确认）
 
-    # 4. 知名箱包品牌 Samsonite 官方新闻（如果提供 RSS）
-    "https://www.samsonite.com/on/demandware.store/Sites-Samsonite-Site/default/Blog-Feed",
+    # 4. 国内电商/行业资讯
+    "https://36kr.com/feed",                                    # 36氪（消费相关）
+    "https://www.huxiu.com/rss/",                               # 虎嗅
+    "https://rss.sina.com.cn/finance/rollnews.xml",             # 新浪财经（消费趋势）
 
-    # 5. 行业资讯网站：Business of Travel
-    "https://www.businesstravelnews.com/RSS",
-
-    # 6. 如果将来发现新的 RSS 源，直接在这里追加一行即可
+    # 5. 国外时尚/消费品媒体
+    "https://www.businessoffashion.com/feed/",                  # BoF 时尚商业
+    "https://www.voguebusiness.com/feed/",                      # Vogue Business
+    "https://wwd.com/feed/",                                    # Women's Wear Daily
 ]
-
-# ============================
 
 def _parse_struct_time_to_timestamp(st):
     if st:
@@ -98,5 +99,4 @@ def get_new_feed_items():
         key=lambda x: _parse_struct_time_to_timestamp(x.get("published_parsed"))
     )
     print(f"总共 {len(all_new_feed_items)} 条新文章待推送")
-
     return all_new_feed_items
