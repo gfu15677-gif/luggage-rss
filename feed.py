@@ -9,29 +9,35 @@ load_dotenv()
 
 RUN_FREQUENCY = int(os.getenv("RUN_FREQUENCY", "3600"))
 
-# ===== 箱包拉杆 RSS 源（多个信源聚合）=====
+# ===== 箱包拉杆 RSS 源（覆盖新闻+微信+抖音+B站+微博）=====
 RSS_URLS = [
     # 1. Google News 多关键词搜索（基础）
     "https://news.google.com/rss/search?q=%E6%8B%89%E6%9D%86%E7%AE%B1+OR+%E8%A1%8C%E6%9D%8E%E7%AE%B1+OR+%E7%AE%B1%E5%8C%85+OR+luggage+OR+suitcase+OR+trolley+case+OR+travel+bag+OR+%E4%B8%AD%E6%B8%AF%E7%9A%AE%E5%85%B7%E5%9F%8E+OR+%E6%8A%A4%E8%84%8A%E6%8B%89%E6%9D%86%E4%B9%A6%E5%8C%85&hl=zh-CN&gl=CN&ceid=CN:zh-Hans",
 
     # 2. 行业垂直媒体
-    "https://www.luggagemagazine.com/feed/",                    # Luggage Magazine
-    "https://www.travelaccessories.org/feed/",                  # Travel Goods Association
-    "https://www.themoodieblog.com/feed/",                      # Moodie Davitt Report（旅游零售）
+    "https://www.luggagemagazine.com/feed/",
+    "https://www.travelaccessories.org/feed/",
+    "https://www.themoodieblog.com/feed/",
 
-    # 3. 品牌官方博客（示例，你可以根据实际品牌添加）
-    "https://www.samsonite.com/blog/feed/",                     # Samsonite 博客（需确认）
-    "https://www.rimowa.com/blog/feed/",                        # Rimowa 博客（需确认）
+    # 3. 品牌官方博客
+    "https://www.samsonite.com/blog/feed/",
+    "https://www.rimowa.com/blog/feed/",
 
-    # 4. 国内电商/行业资讯
-    "https://36kr.com/feed",                                    # 36氪（消费相关）
-    "https://www.huxiu.com/rss/",                               # 虎嗅
-    "https://rss.sina.com.cn/finance/rollnews.xml",             # 新浪财经（消费趋势）
+    # 4. 国内科技/消费媒体
+    "https://36kr.com/feed",
+    "https://www.huxiu.com/rss/",
+    "https://rss.sina.com.cn/finance/rollnews.xml",
 
     # 5. 国外时尚/消费品媒体
-    "https://www.businessoffashion.com/feed/",                  # BoF 时尚商业
-    "https://www.voguebusiness.com/feed/",                      # Vogue Business
-    "https://wwd.com/feed/",                                    # Women's Wear Daily
+    "https://www.businessoffashion.com/feed/",
+    "https://www.voguebusiness.com/feed/",
+    "https://wwd.com/feed/",
+
+    # 6. RSSHub 生成的社交媒体搜索
+    "https://rsshub.app/wechat/search/拉杆箱",
+    "https://rsshub.app/douyin/search/拉杆箱",
+    "https://rsshub.app/bilibili/vsearch/拉杆箱",
+    "https://rsshub.app/weibo/search/拉杆箱",
 ]
 
 def _parse_struct_time_to_timestamp(st):
