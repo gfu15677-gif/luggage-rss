@@ -9,35 +9,33 @@ load_dotenv()
 
 RUN_FREQUENCY = int(os.getenv("RUN_FREQUENCY", "3600"))
 
-# ===== 箱包拉杆 RSS 源（包含 Google News + RSSHub 微信/抖音/B站/微博）=====
+# ===== 箱包拉杆 RSS 源 =====
 RSS_URLS = [
-    # Google News 多关键词搜索（基础）
-    "https://news.google.com/rss/search?q=%E6%8B%89%E6%9D%86%E7%AE%B1+OR+%E8%A1%8C%E6%9D%8E%E7%AE%B1+OR+%E7%AE%B1%E5%8C%85+OR+luggage+OR+suitcase+OR+trolley+case+OR+travel+bag+OR+%E4%B8%AD%E6%B8%AF%E7%9A%AE%E5%85%B7%E5%9F%8E+OR+%E6%8A%A4%E8%84%8A%E6%8B%89%E6%9D%86%E4%B9%A6%E5%8C%85&hl=zh-CN&gl=CN&ceid=CN:zh-Hans",
+    # --- 国内新闻源 ---
+    "https://news.google.com/rss/search?q=%E6%8B%89%E6%9D%86%E7%AE%B1+OR+%E8%A1%8C%E6%9D%8E%E7%AE%B1+OR+%E7%AE%B1%E5%8C%85&hl=zh-CN&gl=CN&ceid=CN:zh-Hans",
+    "https://36kr.com/feed",
+    "https://www.huxiu.com/rss/",
+    "https://rss.sina.com.cn/finance/rollnews.xml",          # 新浪财经
+    "https://www.thepaper.cn/rss/news.xml",
+    "https://www.guancha.cn/feed/news.xml",
 
-    # 行业垂直媒体
+    # --- 国内社交媒体 RSSHub（需自部署）---
+    "https://rsshub.app/wechat/search/拉杆箱",
+    "https://rsshub.app/weibo/search/拉杆箱",
+    "https://rsshub.app/bilibili/vsearch/拉杆箱",
+    "https://rsshub.app/douyin/search/拉杆箱",
+
+    # --- 国外行业媒体 ---
     "https://www.luggagemagazine.com/feed/",
     "https://www.travelaccessories.org/feed/",
     "https://www.themoodieblog.com/feed/",
-
-    # 品牌官方博客（示例）
-    "https://www.samsonite.com/blog/feed/",
-    "https://www.rimowa.com/blog/feed/",
-
-    # 国内科技/消费媒体
-    "https://36kr.com/feed",
-    "https://www.huxiu.com/rss/",
-    "https://rss.sina.com.cn/finance/rollnews.xml",
-
-    # 国外时尚/消费品媒体
     "https://www.businessoffashion.com/feed/",
     "https://www.voguebusiness.com/feed/",
     "https://wwd.com/feed/",
 
-    # RSSHub 生成的社交媒体搜索（需要自己部署或使用公共实例）
-    "https://rsshub.app/wechat/search/拉杆箱",
-    "https://rsshub.app/douyin/search/拉杆箱",
-    "https://rsshub.app/bilibili/vsearch/拉杆箱",
-    "https://rsshub.app/weibo/search/拉杆箱",
+    # --- 品牌官方博客 ---
+    "https://www.samsonite.com/blog/feed/",
+    "https://www.rimowa.com/blog/feed/",
 ]
 
 def _parse_struct_time_to_timestamp(st):
@@ -46,7 +44,7 @@ def _parse_struct_time_to_timestamp(st):
     return 0
 
 def send_feishu_message(text):
-    webhook_url = os.getenv("FEISHU_WEBHOOK")   # 统一使用 FEISHU_WEBHOOK
+    webhook_url = os.getenv("FEISHU_WEBHOOK")
     if not webhook_url:
         print("❌ 环境变量 FEISHU_WEBHOOK 未设置")
         return
@@ -106,7 +104,6 @@ def get_new_feed_items():
     )
     print(f"总共 {len(all_new_feed_items)} 条新文章待推送")
 
-    # 只推送飞书，不涉及 Notion
     for item in all_new_feed_items:
         text = f"{item['title']}\n{item['link']}"
         send_feishu_message(text)
