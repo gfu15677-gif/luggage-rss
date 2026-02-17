@@ -15,15 +15,15 @@ RSS_URLS = [
     "https://news.google.com/rss/search?q=%E6%8B%89%E6%9D%86%E7%AE%B1+OR+%E8%A1%8C%E6%9D%8E%E7%AE%B1+OR+%E7%AE%B1%E5%8C%85&hl=zh-CN&gl=CN&ceid=CN:zh-Hans",
     "https://36kr.com/feed",
     "https://www.huxiu.com/rss/",
-    "https://rss.sina.com.cn/finance/rollnews.xml",          # 新浪财经
+    "https://rss.sina.com.cn/finance/rollnews.xml",
     "https://www.thepaper.cn/rss/news.xml",
     "https://www.guancha.cn/feed/news.xml",
 
-    # --- 国内社交媒体 RSSHub（需自部署）---
-    "https://rsshub.app/wechat/search/拉杆箱",
-    "https://rsshub.app/weibo/search/拉杆箱",
-    "https://rsshub.app/bilibili/vsearch/拉杆箱",
-    "https://rsshub.app/douyin/search/拉杆箱",
+    # --- 国内社交媒体（RSSHub公共实例）---
+    "https://rsshub.uneasy.win/wechat/search/拉杆箱",
+    "https://rsshub.uneasy.win/weibo/search/拉杆箱",
+    "https://rsshub.uneasy.win/bilibili/vsearch/拉杆箱",
+    "https://rsshub.uneasy.win/douyin/search/拉杆箱",
 
     # --- 国外行业媒体 ---
     "https://www.luggagemagazine.com/feed/",
