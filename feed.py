@@ -9,33 +9,26 @@ load_dotenv()
 
 RUN_FREQUENCY = int(os.getenv("RUN_FREQUENCY", "3600"))
 
-# ===== 箱包拉杆 RSS 源 =====
+# ===== 拉杆箱 RSS 源（只保留真正相关的源）=====
 RSS_URLS = [
-    # --- 国内新闻源 ---
-    "https://news.google.com/rss/search?q=%E6%8B%89%E6%9D%86%E7%AE%B1+OR+%E8%A1%8C%E6%9D%8E%E7%AE%B1+OR+%E7%AE%B1%E5%8C%85&hl=zh-CN&gl=CN&ceid=CN:zh-Hans",
-    "https://36kr.com/feed",
-    "https://www.huxiu.com/rss/",
-    "https://rss.sina.com.cn/finance/rollnews.xml",
-    "https://www.thepaper.cn/rss/news.xml",
-    "https://www.guancha.cn/feed/news.xml",
+    # 1. Google News 精准搜索（聚焦拉杆箱关键词）
+    "https://news.google.com/rss/search?q=%E6%8B%89%E6%9D%86%E7%AE%B1+OR+%E8%A1%8C%E6%9D%8E%E7%AE%B1+OR+luggage+OR+suitcase+OR+%E7%AE%B1%E5%8C%85%E5%93%81%E7%89%8C+OR+%E6%96%B0%E5%93%81%E6%8B%89%E6%9D%86%E7%AE%B1&hl=zh-CN&gl=CN&ceid=CN:zh-Hans",
 
-    # --- 国内社交媒体（RSSHub公共实例）---
-    "https://rsshub.uneasy.win/wechat/search/拉杆箱",
-    "https://rsshub.uneasy.win/weibo/search/拉杆箱",
-    "https://rsshub.uneasy.win/bilibili/vsearch/拉杆箱",
-    "https://rsshub.uneasy.win/douyin/search/拉杆箱",
+    # 2. 行业垂直媒体（只保留会持续报道箱包的）
+    "https://www.luggagemagazine.com/feed/",                    # 箱包行业专业杂志
+    "https://www.travelaccessories.org/feed/",                  # 旅行用品协会
 
-    # --- 国外行业媒体 ---
-    "https://www.luggagemagazine.com/feed/",
-    "https://www.travelaccessories.org/feed/",
-    "https://www.themoodieblog.com/feed/",
-    "https://www.businessoffashion.com/feed/",
-    "https://www.voguebusiness.com/feed/",
-    "https://wwd.com/feed/",
+    # 3. 品牌官方博客（如果提供 RSS）
+    "https://www.samsonite.com/blog/feed/",                     # 新秀丽
+    "https://www.rimowa.com/blog/feed/",                        # Rimowa
+    "https://www.tumi.com/blog/feed/",                          # Tumi
+    "https://www.americantourister.com/blog/feed/",             # 美旅
 
-    # --- 品牌官方博客 ---
-    "https://www.samsonite.com/blog/feed/",
-    "https://www.rimowa.com/blog/feed/",
+    # 4. 零售行业新闻（偶尔涉及箱包）
+    "https://www.themoodieblog.com/feed/",                      # 旅游零售
+
+    # 5. 商业媒体中仅保留箱包标签（如果有）
+    # 注意：以下需要确认是否存在，如果不存在 Google News 会覆盖
 ]
 
 def _parse_struct_time_to_timestamp(st):
@@ -102,10 +95,20 @@ def get_new_feed_items():
     all_new_feed_items.sort(
         key=lambda x: _parse_struct_time_to_timestamp(x.get("published_parsed"))
     )
-    print(f"总共 {len(all_new_feed_items)} 条新文章待推送")
+    print(f"总共 {len(all_new_feed_items)} 条新文章待推送（去重前）")
 
+    # 去重逻辑
+    unique_items_dict = {}
     for item in all_new_feed_items:
+        link_key = item['link'].strip().lower()
+        if link_key not in unique_items_dict:
+            unique_items_dict[link_key] = item
+
+    unique_items = list(unique_items_dict.values())
+    print(f"总共 {len(unique_items)} 条新文章待推送（去重后）")
+
+    for item in unique_items:
         text = f"{item['title']}\n{item['link']}"
         send_feishu_message(text)
 
-    return all_new_feed_items
+    return unique_items
